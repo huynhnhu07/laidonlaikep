@@ -2,88 +2,44 @@ import streamlit as st
 # Hiển thị ảnh 
 st.image("IMG_20260616_130705.jpg")
 # Tiêu đề ứng dụng
-st.title("💰 Ứng dụng tính thuế thu nhập cá nhân_Huỳnh Như")
-
+st.title("💰 Ứng dụng tính tiền gửi tiết kiệm_Huỳnh Như")
 # Nhập dữ liệu
-thu_nhap = st.number_input(
-    "Nhập thu nhập hàng tháng (triệu đồng)",
+C = st.number_input(
+    "Nhập số tiền khách hàng gửi tiết kiệm (triệu đồng)",
     min_value=0.0,
-    value=20.0
+    value=100.0
 )
 
-giam_tru = st.number_input(
-    "Nhập tổng giảm trừ gia cảnh (triệu đồng)",
+i = st.number_input(
+    "Nhập lãi suất gửi tiết kiệm theo năm (%)",
     min_value=0.0,
-    value=11.0
+    value=6.0
 )
 
-# Nút tính
-if st.button("Tính thuế TNCN"):
+n = st.number_input(
+    "Nhập số tháng khách hàng gửi tiết kiệm",
+    min_value=1,
+    value=12
+)
 
-    # Thu nhập tính thuế
-    thu_nhap_tinh_thue = max(0, thu_nhap - giam_tru)
+# Đổi lãi suất từ % sang số thập phân
+i = i / 100
 
-    # Hàm tính thuế lũy tiến từng phần
-    def tinh_thue(tntt):
-        thue = 0
+# Nút tính toán
+if st.button("Tính toán"):
+    
+    # Lãi đơn
+    An = C * (1 + (i / 12) * n)
 
-        if tntt <= 5:
-            thue = tntt * 0.05
+    # Lãi kép
+    Bn = C * (1 + i / 12) ** n
 
-        elif tntt <= 10:
-            thue = 5 * 0.05 + (tntt - 5) * 0.10
-
-        elif tntt <= 18:
-            thue = 5 * 0.05 + 5 * 0.10 + (tntt - 10) * 0.15
-
-        elif tntt <= 32:
-            thue = (
-                5 * 0.05
-                + 5 * 0.10
-                + 8 * 0.15
-                + (tntt - 18) * 0.20
-            )
-
-        elif tntt <= 52:
-            thue = (
-                5 * 0.05
-                + 5 * 0.10
-                + 8 * 0.15
-                + 14 * 0.20
-                + (tntt - 32) * 0.25
-            )
-
-        elif tntt <= 80:
-            thue = (
-                5 * 0.05
-                + 5 * 0.10
-                + 8 * 0.15
-                + 14 * 0.20
-                + 20 * 0.25
-                + (tntt - 52) * 0.30
-            )
-
-        else:
-            thue = (
-                5 * 0.05
-                + 5 * 0.10
-                + 8 * 0.15
-                + 14 * 0.20
-                + 20 * 0.25
-                + 28 * 0.30
-                + (tntt - 80) * 0.35
-            )
-
-        return thue
-
-    thue_phai_nop = tinh_thue(thu_nhap_tinh_thue)
-
-    st.success("Kết quả tính thuế")
+    st.success("Kết quả tính toán")
 
     st.write(
-        f"📌 Thu nhập tính thuế: **{thu_nhap_tinh_thue:.2f} triệu đồng**"
+        f"📌 Số tiền khách hàng nhận được theo lãi đơn: **{An:,.2f} triệu đồng**"
     )
 
     st.write(
-        f"📌 Thuế thu nhập cá nhân phải nộp: **{thue_phai_nop:.2f} triệu đồng**"
+        f"📌 Số tiền khách hàng nhận được theo lãi kép: **{Bn:,.2f} triệu đồng**"
     )
