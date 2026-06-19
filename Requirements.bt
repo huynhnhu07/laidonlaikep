@@ -1,1 +1,89 @@
-Streamlit
+import streamlit as st
+
+# Tiêu đề ứng dụng
+st.title("💰 Ứng dụng tính thuế thu nhập cá nhân_Huỳnh Như 
+")
+
+# Nhập dữ liệu
+thu_nhap = st.number_input(
+    "Nhập thu nhập hàng tháng (triệu đồng)",
+    min_value=0.0,
+    value=20.0
+)
+
+giam_tru = st.number_input(
+    "Nhập tổng giảm trừ gia cảnh (triệu đồng)",
+    min_value=0.0,
+    value=11.0
+)
+
+# Nút tính
+if st.button("Tính thuế TNCN"):
+
+    # Thu nhập tính thuế
+    thu_nhap_tinh_thue = max(0, thu_nhap - giam_tru)
+
+    # Hàm tính thuế lũy tiến từng phần
+    def tinh_thue(tntt):
+        thue = 0
+
+        if tntt <= 5:
+            thue = tntt * 0.05
+
+        elif tntt <= 10:
+            thue = 5 * 0.05 + (tntt - 5) * 0.10
+
+        elif tntt <= 18:
+            thue = 5 * 0.05 + 5 * 0.10 + (tntt - 10) * 0.15
+
+        elif tntt <= 32:
+            thue = (
+                5 * 0.05
+                + 5 * 0.10
+                + 8 * 0.15
+                + (tntt - 18) * 0.20
+            )
+
+        elif tntt <= 52:
+            thue = (
+                5 * 0.05
+                + 5 * 0.10
+                + 8 * 0.15
+                + 14 * 0.20
+                + (tntt - 32) * 0.25
+            )
+
+        elif tntt <= 80:
+            thue = (
+                5 * 0.05
+                + 5 * 0.10
+                + 8 * 0.15
+                + 14 * 0.20
+                + 20 * 0.25
+                + (tntt - 52) * 0.30
+            )
+
+        else:
+            thue = (
+                5 * 0.05
+                + 5 * 0.10
+                + 8 * 0.15
+                + 14 * 0.20
+                + 20 * 0.25
+                + 28 * 0.30
+                + (tntt - 80) * 0.35
+            )
+
+        return thue
+
+    thue_phai_nop = tinh_thue(thu_nhap_tinh_thue)
+
+    st.success("Kết quả tính thuế")
+
+    st.write(
+        f"📌 Thu nhập tính thuế: **{thu_nhap_tinh_thue:.2f} triệu đồng**"
+    )
+
+    st.write(
+        f"📌 Thuế thu nhập cá nhân phải nộp: **{thue_phai_nop:.2f} triệu đồng**"
+    )
